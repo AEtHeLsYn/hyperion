@@ -31,14 +31,17 @@ EffectEngine::EffectEngine(Hyperion * hyperion, const Json::Value & jsonEffectCo
 
 	// read all effects
 	const Json::Value & paths = jsonEffectConfig["paths"];
+	bool dirFound = false;
 	for (Json::UInt i = 0; i < paths.size(); ++i)
 	{
 		const std::string & path = paths[i].asString();
 		QDir directory(QString::fromStdString(path));
-		if (!directory.exists())
-		{
-			std::cerr << "EFFECTENGINE ERROR: Effect directory can not be loaded: " << path << std::endl;
+		if (!directory.exists()) {
+			//std::cerr << "EFFECTENGINE ERROR: Effect directory can not be loaded: " << path << std::endl;
 			continue;
+		}
+		else {
+			dirFound = true;
 		}
 
 		QStringList filenames = directory.entryList(QStringList() << "*.json", QDir::Files, QDir::Name | QDir::IgnoreCase);
@@ -51,10 +54,14 @@ EffectEngine::EffectEngine(Hyperion * hyperion, const Json::Value & jsonEffectCo
 			}
 		}
 	}
+	
+	if (!dirFound) {
+		std::cerr << "EFFECTENGINE ERROR: Effect directory can not be loaded: " << path << std::endl;
+	}
 
 	// initialize the python interpreter
 	std::cout << "EFFECTENGINE INFO: Initializing Python interpreter" << std::endl;
-    Effect::registerHyperionExtensionModule();
+    	Effect::registerHyperionExtensionModule();
 	Py_InitializeEx(0);
 	PyEval_InitThreads(); // Create the GIL
 	_mainThreadState = PyEval_SaveThread();
