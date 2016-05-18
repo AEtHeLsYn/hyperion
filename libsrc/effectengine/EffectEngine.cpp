@@ -56,7 +56,7 @@ EffectEngine::EffectEngine(Hyperion * hyperion, const Json::Value & jsonEffectCo
 	}
 	
 	if (!dirFound) {
-		std::cerr << "EFFECTENGINE ERROR: Effect directory can not be loaded: " << path << std::endl;
+		std::cerr << "EFFECTENGINE ERROR: Effect directories can not be loaded" << std::endl;
 	}
 
 	// initialize the python interpreter
